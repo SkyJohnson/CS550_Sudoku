@@ -1,6 +1,7 @@
 '''
 Constraint propagation
 '''
+from queue import Queue
 
 def AC3(csp, queue=None, removals=None):
     """AC3 constraint propagation
@@ -15,16 +16,27 @@ def AC3(csp, queue=None, removals=None):
     # General algorithm:
     #
     # queue(constraints)
+    queue = Queue()
+    for x1 in csp.variables:
+        for x2 in csp.neighbors[x1]:
+            queue.put((x1, x2))
     # while queue not empty:
+    while not queue.empty():
     #   (x1, x2) = dequeue
+        (x1, x2) = queue.get()
     #   if revise(csp, x1, x2):
+        if revise(csp, x1, x2):
     #       if domain(x1) empty *not solvable* -> return false
+            if len(csp.domains[x1]) == 0:
+                return False
     #       else:
+            else:
     #           for x in {neighbors(x1)-x2}:
+                for x in (csp.neighbors[x1] - x2):
     #               enqueue((x, x1))
+                    queue.put((x, x1))
     # return true
-    
-    raise NotImplemented
+    return True
 
 def revise(csp, x1, x2):
     revised = False
@@ -37,3 +49,5 @@ def revise(csp, x1, x2):
     #       revised = true
 
     return revised
+
+
