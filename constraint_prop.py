@@ -16,11 +16,14 @@ def AC3(csp, queue=None, removals=None):
     #
     # queue(constraints)
     queue = Queue()
+    csp.support_pruning() # This has to be called before pruning.
+    
     for x1 in csp.variables:
         for x2 in csp.neighbors[x1]:
             queue.put((x1, x2))
     # while queue not empty:
     while not queue.empty():
+        
     #   (x1, x2) = dequeue
         (x1, x2) = queue.get()
     #   if revise(csp, x1, x2):
@@ -31,13 +34,12 @@ def AC3(csp, queue=None, removals=None):
     #       else:
             else:
     #           for x in {neighbors(x1)-x2}:
-                for x in (csp.neighbors[x1] - set(x2)):
-    #               enqueue((x, x1))
+                for x in (csp.neighbors[x1] - {x2}): # I think this is fixed. But the final "solved" puzzle is blank. So it's still messing up somewhere.
                     queue.put((x, x1))
     # return true
     return True
 
-def revise(csp, x1, x2):
+def revise(csp, x1, x2): # This is the pruning function/method.
     revised = False
 
     # general algorithm:
@@ -52,7 +54,6 @@ def revise(csp, x1, x2):
     # #       revised = true
                 revised = True
                 break
-
     return revised
 
 
