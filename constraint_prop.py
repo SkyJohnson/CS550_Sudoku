@@ -16,7 +16,7 @@ def AC3(csp, queue=None, removals=None):
     #
     # queue(constraints)
     queue = Queue()
-    csp.support_pruning() # This has to be called before pruning.
+    # csp.support_pruning() # This has to be called before pruning?
     
     for x1 in csp.variables:
         for x2 in csp.neighbors[x1]:
@@ -34,7 +34,7 @@ def AC3(csp, queue=None, removals=None):
     #       else:
             else:
     #           for x in {neighbors(x1)-x2}:
-                for x in (csp.neighbors[x1] - {x2}): # I think this is fixed. But the final "solved" puzzle is blank. So it's still messing up somewhere.
+                for x in (csp.neighbors[x1] - {x2}): # I think this is fixed. But the final "solved" puzzle is the same as the initial puzzle.
                     queue.put((x, x1))
     # return true
     return True
@@ -47,13 +47,13 @@ def revise(csp, x1, x2): # This is the pruning function/method.
     # for x in domain(x1):
     for x in csp.domains[x1]:
     #   if no y in domain(x2) satsfies constraint(x,y):
-        for y in csp.domains[x2]:
     # #       domain(x1).remove(x)
-            if y in csp.choices(x1) and not csp.constraints(x1, x, x2, y):
-                csp.prune(x1, x, None)
-    # #       revised = true
-                revised = True
-                break
+            for y in csp.domains[x2]:
+                if not y in csp.choices(x1) and not csp.constraints(x1, x, x2, y): # I think this is the part that's messing up.
+                    csp.prune(x1, x, None) # None is for removals.
+    # #             revised = true
+                    revised = True
+                    #break
     return revised
 
 
