@@ -25,7 +25,6 @@ def AC3(csp, queue=None, removals=None):
             
             
     # while queue not empty:
-    queue.join()
     while queue.qsize() > 0: # Changed it upon the recommendation in the empty() function.
     #   (x1, x2) = dequeue
         (x1, x2) = queue.get()
