@@ -31,7 +31,7 @@ def AC3(csp, queue=None, removals=None):
     #   if revise(csp, x1, x2):
         if revise(csp, x1, x2):
     #       if domain(x1) empty *not solvable* -> return false
-            if len(csp.domains[x1]) == 0:
+            if len(csp.curr_domains[x1]) == 0:
                 return False
     #       else:
             else:
@@ -48,11 +48,11 @@ def revise(csp, x1, x2): # This is the pruning function/method.
     # general algorithm:
     #
     # for x in domain(x1):
-    for x in csp.domains[x1]:
+    for x in csp.curr_domains[x1]:
     #   if no y in domain(x2) satsfies constraint(x,y):
     # #       domain(x1).remove(x)
-            for y in csp.domains[x2]:
-                if y in csp.choices(x1) and not csp.constraints(x1, x, x2, y): # I think this is the part that's messing up.
+            for y in csp.curr_domains[x2]:
+                if not csp.constraints(x1, x, x2, y): # I think this is the part that's messing up.
                     csp.prune(x1, x, None) # None is for removals.
     # #             revised = true
                     revised = True
