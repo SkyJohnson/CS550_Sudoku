@@ -44,16 +44,21 @@ def revise(csp, x1, x2):
     #
     # for x in domain(x1) of choices:
     for x in csp.choices(x1):
+        satisfied = False
     #   if no choice of x2 in domain(x2) satsfies constraint(x,y):
         for y in csp.choices(x2):
     # #       domain(x1).remove(x)
+    
+            # As long as the constraint is satisfied for at least one value of x2, we don't remove x from the domain of x1.
             if csp.constraints(x1, x, x2, y):
+                satisfied = True
                 break
-            else:
-                csp.prune(x1, x, None)
-    # #       revised = true
-                revised = True
-                break
+        #If no value of x2 satisfies the constraint, we remove x from the domain of x1.
+        if satisfied == False:
+            csp.prune(x1, x, None)
+            revised = True
+            
+            
 
     return revised
 
