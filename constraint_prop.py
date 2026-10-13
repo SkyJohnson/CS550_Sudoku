@@ -26,12 +26,12 @@ def AC3(csp, queue=None, removals=None):
     #   if revise(csp, x1, x2):
         if revise(csp, x1, x2):
     #       if domain(x1) empty *not solvable* -> return false
-            if len(csp.domains[x1]) == 0:
+            if len(csp.choices(x1)) == 0:
                 return False
     #       else:
             else:
     #           for x in {neighbors(x1)-x2}:
-                for x in (csp.neighbors[x1] - set(x2)):
+                for x in (csp.neighbors[x1] - {x2}):
     #               enqueue((x, x1))
                     queue.put((x, x1))
     # return true
@@ -42,16 +42,25 @@ def revise(csp, x1, x2):
 
     # general algorithm:
     #
-    # for x in domain(x1):
-    for x in csp.domains[x1]:
-    #   if no y in domain(x2) satsfies constraint(x,y):
-        for y in csp.domains[x2]:
+    # for x in domain(x1) of choices:
+    
+    #Iterating over csp.choices(x1)[:] protects the list because it's looping over a separate, temporary snapshot of the list while modifying the original.
+    for x in csp.choices(x1)[:]:
+        satisfied = False
+    #   if no choice of x2 in domain(x2) satsfies constraint(x,y):
+        for y in csp.choices(x2):
     # #       domain(x1).remove(x)
-            if y in csp.choices(x1) and not csp.constraints(x1, x, x2, y):
-                csp.prune(x1, x, None)
-    # #       revised = true
-                revised = True
+    
+            # As long as the constraint is satisfied for at least one value of x2, we don't remove x from the domain of x1.
+            if csp.constraints(x1, x, x2, y):
+                satisfied = True
                 break
+        #If no value of x2 satisfies the constraint, we remove x from the domain of x1.
+        if satisfied == False:
+            csp.prune(x1, x, None)
+            revised = True
+            
+            
 
     return revised
 
