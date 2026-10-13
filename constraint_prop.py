@@ -26,7 +26,7 @@ def AC3(csp, queue=None, removals=None):
     #   if revise(csp, x1, x2):
         if revise(csp, x1, x2):
     #       if domain(x1) empty *not solvable* -> return false
-            if len(csp.domains[x1]) == 0:
+            if len(csp.choices(x1)) == 0:
                 return False
     #       else:
             else:
@@ -43,7 +43,9 @@ def revise(csp, x1, x2):
     # general algorithm:
     #
     # for x in domain(x1) of choices:
-    for x in csp.choices(x1):
+    
+    #Iterating over csp.choices(x1)[:] protects the list because it's looping over a separate, temporary snapshot of the list while modifying the original.
+    for x in csp.choices(x1)[:]:
         satisfied = False
     #   if no choice of x2 in domain(x2) satsfies constraint(x,y):
         for y in csp.choices(x2):
